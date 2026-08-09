@@ -38,13 +38,14 @@ public class SegmentLineageUtils {
   /// Use the segment lineage metadata to filters out either merged segments or original segments in place
   /// to make sure that the final segments contain no duplicate data.
   public static void filterSegmentsBasedOnLineageInPlace(Set<String> segments, SegmentLineage segmentLineage) {
-    if (segmentLineage != null) {
-      for (LineageEntry lineageEntry : segmentLineage.getLineageEntries().values()) {
-        if (lineageEntry.getState() == LineageEntryState.COMPLETED) {
-          lineageEntry.getSegmentsFrom().forEach(segments::remove);
-        } else {
-          lineageEntry.getSegmentsTo().forEach(segments::remove);
-        }
+    if (segmentLineage == null) {
+      return;
+    }
+    for (LineageEntry lineageEntry : segmentLineage.getLineageEntries().values()) {
+      if (lineageEntry.getState() == LineageEntryState.COMPLETED) {
+        lineageEntry.getSegmentsFrom().forEach(segments::remove);
+      } else {
+        lineageEntry.getSegmentsTo().forEach(segments::remove);
       }
     }
   }
