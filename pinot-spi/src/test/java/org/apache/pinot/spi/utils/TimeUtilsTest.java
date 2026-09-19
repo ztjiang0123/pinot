@@ -18,6 +18,8 @@
  */
 package org.apache.pinot.spi.utils;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -44,6 +46,26 @@ public class TimeUtilsTest {
     Assert.assertTrue(TimeUtils.isPeriodValid("-2m"));
     Assert.assertTrue(TimeUtils.isPeriodValid("-4d"));
     Assert.assertFalse(TimeUtils.isPeriodValid(null));
+  }
+
+  @Test
+  public void testIsValidTimeIntervalBoundaries() {
+    long min = TimeUtils.VALID_MIN_TIME_MILLIS;
+    long max = TimeUtils.VALID_MAX_TIME_MILLIS;
+
+    // Interval exactly at the valid boundaries is valid (endpoints are inclusive).
+    Assert.assertTrue(TimeUtils.isValidTimeInterval(new Interval(min, max, DateTimeZone.UTC)));
+    // Zero-length intervals sitting on each boundary are valid.
+    Assert.assertTrue(TimeUtils.isValidTimeInterval(new Interval(min, min, DateTimeZone.UTC)));
+    Assert.assertTrue(TimeUtils.isValidTimeInterval(new Interval(max, max, DateTimeZone.UTC)));
+
+    // Start just below the minimum is invalid.
+    Assert.assertFalse(TimeUtils.isValidTimeInterval(new Interval(min - 1, max, DateTimeZone.UTC)));
+    // End just above the maximum is invalid.
+    Assert.assertFalse(TimeUtils.isValidTimeInterval(new Interval(min, max + 1, DateTimeZone.UTC)));
+    // Entirely out of range on either side is invalid.
+    Assert.assertFalse(TimeUtils.isValidTimeInterval(new Interval(min - 2, min - 1, DateTimeZone.UTC)));
+    Assert.assertFalse(TimeUtils.isValidTimeInterval(new Interval(max + 1, max + 2, DateTimeZone.UTC)));
   }
 
   @Test
