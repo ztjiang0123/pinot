@@ -18,6 +18,7 @@
  */
 package org.apache.pinot.spi.utils;
 
+import java.time.format.DateTimeParseException;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.testng.Assert;
@@ -27,14 +28,6 @@ import static org.testng.Assert.assertEquals;
 
 
 public class TimeUtilsTest {
-
-  @Test
-  public void testConvertDateTimeToMillis() {
-    assertEquals((long) TimeUtils.convertTimestampToMillis("2022-08-09T12:31:38.222Z"), 1660048298222L);
-    Assert.assertThrows(IllegalArgumentException.class, () -> TimeUtils
-        .convertTimestampToMillis("2022-08-09X12:31:38.222Z"));
-    assertEquals((long) TimeUtils.convertTimestampToMillis(null), 0L);
-  }
 
   @Test
   public void testConvertPeriodToMillis() {
@@ -51,6 +44,20 @@ public class TimeUtilsTest {
         () -> TimeUtils.convertPeriodToMillis("garbage"));
     assertEquals(e.getMessage(), "Invalid time spec 'garbage' (Valid examples: '3h', '4h30m')");
     assertEquals(e.getCause().getClass(), IllegalArgumentException.class);
+  }
+
+  @Test
+  public void testConvertTimestampToMillis() {
+    // Null returns 0L (backward-compatible behavior).
+    assertEquals((long) TimeUtils.convertTimestampToMillis(null), 0L);
+    // Valid ISO 8601 timestamp is converted to epoch millis.
+    assertEquals((long) TimeUtils.convertTimestampToMillis("2022-08-09T12:31:38.222Z"), 1660048298222L);
+    // Invalid input rethrows IllegalArgumentException with contextual message and preserved cause.
+    IllegalArgumentException e = Assert.expectThrows(IllegalArgumentException.class,
+        () -> TimeUtils.convertTimestampToMillis("2022-08-09X12:31:38.222Z"));
+    assertEquals(e.getMessage(),
+        "Invalid time spec '2022-08-09X12:31:38.222Z' (Valid example: '2022-08-09T12:31:38.222Z')");
+    assertEquals(e.getCause().getClass(), DateTimeParseException.class);
   }
 
   @Test

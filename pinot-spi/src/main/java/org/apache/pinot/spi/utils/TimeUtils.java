@@ -163,17 +163,16 @@ public class TimeUtils {
   /// @return the corresponding time converted to milliseconds
   /// @throws IllegalArgumentException if the string does not conform to the expected format
   public static Long convertTimestampToMillis(String timeStr) {
-    long millis = 0L;
-    if (timeStr != null) {
-      try {
-        millis = Instant.parse(timeStr).toEpochMilli();
-      } catch (Exception e) {
-        // rethrowing with more contextual information
-        throw new IllegalArgumentException("Invalid time spec '" + timeStr + "' (Valid example: "
-            + "'2022-08-09T12:31:38.222Z')", e);
-      }
+    if (timeStr == null) {
+      return 0L;
     }
-    return millis;
+    try {
+      return Instant.parse(timeStr).toEpochMilli();
+    } catch (Exception e) {
+      // rethrowing with more contextual information
+      throw new IllegalArgumentException("Invalid time spec '" + timeStr + "' (Valid example: "
+          + "'2022-08-09T12:31:38.222Z')", e);
+    }
   }
 
   /// Converts milliseconds into human readable duration string. For ex, input of 86400000L would
