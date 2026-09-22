@@ -145,17 +145,16 @@ public class TimeUtils {
   /// @return the corresponding time converted to milliseconds
   /// @throws IllegalArgumentException if the string does not conform to the expected format
   public static Long convertPeriodToMillis(String timeStr) {
-    Long millis = 0L;
-    if (timeStr != null) {
-      try {
-        Period p = PERIOD_FORMATTER.parsePeriod(timeStr);
-        millis = p.toStandardDuration().getStandardSeconds() * 1000L;
-      } catch (IllegalArgumentException e) {
-        // rethrowing with more contextual information
-        throw new IllegalArgumentException("Invalid time spec '" + timeStr + "' (Valid examples: '3h', '4h30m')", e);
-      }
+    if (timeStr == null) {
+      return 0L;
     }
-    return millis;
+    try {
+      Period p = PERIOD_FORMATTER.parsePeriod(timeStr);
+      return p.toStandardDuration().getStandardSeconds() * 1000L;
+    } catch (IllegalArgumentException e) {
+      // rethrowing with more contextual information
+      throw new IllegalArgumentException("Invalid time spec '" + timeStr + "' (Valid examples: '3h', '4h30m')", e);
+    }
   }
 
   /// Converts a string representing the timestamp to corresponding milliseconds.

@@ -37,6 +37,23 @@ public class TimeUtilsTest {
   }
 
   @Test
+  public void testConvertPeriodToMillis() {
+    // Null returns 0L (backward-compatible behavior).
+    assertEquals((long) TimeUtils.convertPeriodToMillis(null), 0L);
+    // Empty string parses to a zero-length period.
+    assertEquals((long) TimeUtils.convertPeriodToMillis(""), 0L);
+    // Compound period: 4h30m == (4 * 3600 + 30 * 60) * 1000.
+    assertEquals((long) TimeUtils.convertPeriodToMillis("4h30m"), 16_200_000L);
+    // Negative period is supported.
+    assertEquals((long) TimeUtils.convertPeriodToMillis("-2h"), -7_200_000L);
+    // Invalid input rethrows IllegalArgumentException with contextual message and preserved cause.
+    IllegalArgumentException e = Assert.expectThrows(IllegalArgumentException.class,
+        () -> TimeUtils.convertPeriodToMillis("garbage"));
+    assertEquals(e.getMessage(), "Invalid time spec 'garbage' (Valid examples: '3h', '4h30m')");
+    assertEquals(e.getCause().getClass(), IllegalArgumentException.class);
+  }
+
+  @Test
   public void testIsPeriodValid() {
     Assert.assertTrue(TimeUtils.isPeriodValid("2d"));
     Assert.assertTrue(TimeUtils.isPeriodValid(""));
