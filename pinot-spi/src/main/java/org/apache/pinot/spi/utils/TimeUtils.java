@@ -119,8 +119,8 @@ public class TimeUtils {
   ///
   /// The current valid range used is between beginning of 1971 and beginning of 2071.
   public static boolean isValidTimeInterval(Interval timeInterval) {
-    return timeInterval.getStartMillis() >= VALID_MIN_TIME_MILLIS
-        && timeInterval.getEndMillis() <= VALID_MAX_TIME_MILLIS;
+    return timeValueInValidRange(timeInterval.getStartMillis())
+        && timeValueInValidRange(timeInterval.getEndMillis());
   }
 
   /// Returns the minimum valid time in milliseconds.
