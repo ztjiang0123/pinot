@@ -52,6 +52,8 @@ public class TimeUtilsTest {
     assertEquals((long) TimeUtils.convertTimestampToMillis(null), 0L);
     // Valid ISO 8601 timestamp is converted to epoch millis.
     assertEquals((long) TimeUtils.convertTimestampToMillis("2022-08-09T12:31:38.222Z"), 1660048298222L);
+    // An explicit timezone offset resolves to the same instant as the equivalent Z timestamp.
+    assertEquals((long) TimeUtils.convertTimestampToMillis("2022-08-09T14:31:38.222+02:00"), 1660048298222L);
     // Invalid input rethrows IllegalArgumentException with contextual message and preserved cause.
     IllegalArgumentException e = Assert.expectThrows(IllegalArgumentException.class,
         () -> TimeUtils.convertTimestampToMillis("2022-08-09X12:31:38.222Z"));
