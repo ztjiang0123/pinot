@@ -104,6 +104,8 @@ SELECT sum(clicks), sum(impressions) FROM AdAnalyticsTable
 
 Want to contribute to Apache Pinot? 👋🍷
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution resources.
+
 Want to join the ranks of open source committers to Apache Pinot? Then check out the [Contribution Guide](https://docs.pinot.apache.org/developers/developers-and-contributors/contribution-guidelines) for how you can get involved in the code.
 
 If you have a bug or an idea for a new feature, browse the [open issues](https://github.com/apache/pinot/issues) to see what we’re already working on before opening a new one.
